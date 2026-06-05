@@ -62,7 +62,6 @@ void runExperiment() {
         double tAll =
             std::chrono::duration<double, std::milli>(t1 - t0).count();
 
-        // 2. Время getPerm1 
         std::uniform_int_distribution<int> dist(1, totalPerms);
         int num = dist(rng);
         t0 = std::chrono::steady_clock::now();
@@ -71,7 +70,6 @@ void runExperiment() {
         double t1time =
             std::chrono::duration<double, std::milli>(t1 - t0).count();
 
-        // 3. Время getPerm2 
         const int repeats = 5000;
         t0 = std::chrono::steady_clock::now();
         for (int r = 0; r < repeats; ++r) {
