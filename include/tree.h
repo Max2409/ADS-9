@@ -5,7 +5,7 @@
 #include <vector>
 
 class PMTree {
- public:
+public:
     struct Node {
         char data;
         int  subtreeSize;
@@ -21,7 +21,7 @@ class PMTree {
 
     Node* getRoot() const { return root_; }
 
- private:
+private:
     Node* root_;
 
     void clear(Node* node);
