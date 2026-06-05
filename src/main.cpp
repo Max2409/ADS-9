@@ -1,6 +1,4 @@
 // Copyright 2022 NNTU-CS
-#include "tree.h"
-
 #include <iostream>
 #include <iomanip>
 #include <chrono>
@@ -8,12 +6,12 @@
 #include <string>
 #include <vector>
 
+#include "tree.h"
 
 //  Преобразование вектора символов в строку (для удобства)
 static std::string vec2str(const std::vector<char>& v) {
     return std::string(v.begin(), v.end());
 }
-
 
 //  Демонстрация работы с перестановками
 void demo() {
@@ -38,7 +36,6 @@ void demo() {
     std::cout << "\n";
 }
 
-
 //  Вычислительный эксперимент
 void runExperiment() {
     std::cout << "Вычислительный эксперимент (зависимость времени от n)\n";
@@ -50,6 +47,7 @@ void runExperiment() {
     std::mt19937 rng(42);  // фиксированный seed
 
     for (int n = 2; n <= 10; ++n) {
+        // Готовим алфавит: 'a', 'b', 'c', ...
         std::vector<char> input;
         for (int i = 0; i < n; ++i)
             input.push_back(static_cast<char>('a' + i));
