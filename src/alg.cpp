@@ -1,12 +1,10 @@
 // Copyright 2022 NNTU-CS
-#include  <iostream>
-#include  <fstream>
-#include  <locale>
-#include  <cstdlib>
-#include  "tree.h"
+#include "tree.h"
+
 #include <algorithm>
 #include <string>
 #include <vector>
+
 
 //  Вспомогательные методы класса PMTree
 PMTree::PMTree(const std::vector<char>& input) {
@@ -51,6 +49,7 @@ void PMTree::buildSubtree(Node* parent,
     }
 }
 
+
 //  Рекурсивный сбор всех перестановок из дерева
 namespace {
 void gatherPerms(PMTree::Node* node,
@@ -66,10 +65,10 @@ void gatherPerms(PMTree::Node* node,
         prefix.pop_back();
     }
 }
-}  
+}  // namespace
 
 
-//  getAllPerms – все перестановки в лексикографическом порядке
+//  getAllPerms
 std::vector<std::vector<char>> getAllPerms(const PMTree& tree) {
     std::vector<std::vector<char>> allPermutations;
     PMTree::Node* root = tree.getRoot();
@@ -94,7 +93,6 @@ std::vector<char> getPerm1(PMTree& tree, int num) {
 
 
 //  getPerm2 – быстрый способ
-
 std::vector<char> getPerm2(const PMTree& tree, int num) {
     PMTree::Node* root = tree.getRoot();
     if (root == nullptr || num < 1 || num > root->subtreeSize)
