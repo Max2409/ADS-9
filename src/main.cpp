@@ -1,40 +1,43 @@
 // Copyright 2022 NNTU-CS
 #include "tree.h"
-
 #include <iostream>
 #include <iomanip>
 #include <chrono>
 #include <random>
-#include "tree.h"
+#include <string>
+#include <vector>
 
 
-//  Преобразование вектора символов в строку (для удобства)
+
+//  Преобразование вектора символов в строку
 static std::string vec2str(const std::vector<char>& v) {
     return std::string(v.begin(), v.end());
 }
 
-//  Демонстрация работы с перестановками-
+
+//  Демонстрация работы с перестановками
 void demo() {
     std::vector<char> symbols = {'1', '2', '3'};
     PMTree tree(symbols);
-  // Все перестановки
+
     std::cout << "=== Все перестановки для {1,2,3} ===\n";
     auto all = getAllPerms(tree);
     for (const auto& perm : all)
         std::cout << vec2str(perm) << ' ';
     std::cout << "\n\n";
 
-    // Сравнение двух методов получения перестановки по номеру
     std::cout << "Сравнение getPerm1 и getPerm2:\n";
     for (int num = 1; num <= static_cast<int>(all.size()); ++num) {
         auto p1 = getPerm1(tree, num);
         auto p2 = getPerm2(tree, num);
         std::cout << num << ": " << vec2str(p1)
-                  << " (getPerm1) | " << vec2str(p2)
+                  << " (getPerm1) | "
+                  << vec2str(p2)
                   << " (getPerm2)\n";
     }
     std::cout << "\n";
 }
+
 
 //  Вычислительный эксперимент
 void runExperiment() {
@@ -44,10 +47,9 @@ void runExperiment() {
               << std::setw(12) << "t1(ms)"
               << std::setw(12) << "t2(us)\n";
 
-    std::mt19937 rng(42);  // фиксированный seed
+    std::mt19937 rng(42); 
 
     for (int n = 2; n <= 10; ++n) {
-        // Готовим алфавит: 'a', 'b', 'c', ...
         std::vector<char> input;
         for (int i = 0; i < n; ++i)
             input.push_back(static_cast<char>('a' + i));
@@ -57,19 +59,22 @@ void runExperiment() {
 
         // 1. Время getAllPerms
         auto t0 = std::chrono::steady_clock::now();
-        volatile auto all = getAllPerms(tree);   // volatile мешает оптимизатору выкинуть вызов
+        // volatile предотвращает удаление вызова оптимизатором
+        volatile auto all = getAllPerms(tree);
         auto t1 = std::chrono::steady_clock::now();
-        double tAll = std::chrono::duration<double, std::milli>(t1 - t0).count();
+        double tAll =
+            std::chrono::duration<double, std::milli>(t1 - t0).count();
 
-        // 2. Время getPerm1 (медленный способ)
+        // 2. Время getPerm1
         std::uniform_int_distribution<int> dist(1, totalPerms);
         int num = dist(rng);
         t0 = std::chrono::steady_clock::now();
         volatile auto perm1 = getPerm1(tree, num);
         t1 = std::chrono::steady_clock::now();
-        double t1time = std::chrono::duration<double, std::milli>(t1 - t0).count();
+        double t1time =
+            std::chrono::duration<double, std::milli>(t1 - t0).count();
 
-        // 3. Время getPerm2 (быстрый способ, усредняем много запусков)
+        // 3. Время getPerm2
         const int repeats = 5000;
         t0 = std::chrono::steady_clock::now();
         for (int r = 0; r < repeats; ++r) {
@@ -77,12 +82,17 @@ void runExperiment() {
             volatile auto perm2 = getPerm2(tree, num);
         }
         t1 = std::chrono::steady_clock::now();
-        double t2avg = std::chrono::duration<double, std::micro>(t1 - t0).count() / repeats;
+        double t2avg =
+            std::chrono::duration<double, std::micro>(t1 - t0).count()
+            / repeats;
 
         std::cout << std::setw(4) << n
-                  << std::setw(12) << std::fixed << std::setprecision(2) << tAll
-                  << std::setw(12) << std::fixed << std::setprecision(2) << t1time
-                  << std::setw(12) << std::fixed << std::setprecision(2) << t2avg
+                  << std::setw(12) << std::fixed
+                  << std::setprecision(2) << tAll
+                  << std::setw(12) << std::fixed
+                  << std::setprecision(2) << t1time
+                  << std::setw(12) << std::fixed
+                  << std::setprecision(2) << t2avg
                   << '\n';
     }
 }
