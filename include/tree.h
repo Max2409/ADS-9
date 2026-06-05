@@ -45,5 +45,4 @@ std::vector<std::vector<char>> getAllPerms(const PMTree& tree);
 std::vector<char> getPerm1(PMTree& tree, int num);
 std::vector<char> getPerm2(const PMTree& tree, int num);
 
-#endif
 #endif  // INCLUDE_TREE_H_
