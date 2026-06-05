@@ -6,6 +6,7 @@
 #include  "tree.h"
 #include <algorithm>
 #include <string>
+#include <vector>
 
 //  Вспомогательные методы класса PMTree
 PMTree::PMTree(const std::vector<char>& input) {
@@ -27,21 +28,21 @@ void PMTree::clear(Node* node) {
 }
 
 int PMTree::factorial(int n) {
-    // рекурсивная версия для разнообразия
     if (n <= 1) return 1;
     return n * factorial(n - 1);
 }
 
-void PMTree::buildSubtree(Node* parent, const std::vector<char>& symbolsLeft) {
+void PMTree::buildSubtree(Node* parent,
+                         const std::vector<char>& symbolsLeft) {
     if (symbolsLeft.empty()) return;
 
-    int childPermCount = factorial(static_cast<int>(symbolsLeft.size()) - 1);
+    int childPermCount =
+        factorial(static_cast<int>(symbolsLeft.size()) - 1);
 
     for (char ch : symbolsLeft) {
         Node* kid = new Node(ch, childPermCount);
         parent->children.push_back(kid);
 
-        // Готовим список символов без текущего
         std::vector<char> nextSymbols;
         for (char c : symbolsLeft)
             if (c != ch) nextSymbols.push_back(c);
@@ -52,22 +53,23 @@ void PMTree::buildSubtree(Node* parent, const std::vector<char>& symbolsLeft) {
 
 //  Рекурсивный сбор всех перестановок из дерева
 namespace {
-    void gatherPerms(PMTree::Node* node,
-                     std::vector<char>& prefix,
-                     std::vector<std::vector<char>>& out) {
-        if (node->children.empty()) {
-            out.push_back(prefix);
-            return;
-        }
-        for (PMTree::Node* kid : node->children) {
-            prefix.push_back(kid->data);
-            gatherPerms(kid, prefix, out);
-            prefix.pop_back();
-        }
+void gatherPerms(PMTree::Node* node,
+                 std::vector<char>& prefix,
+                 std::vector<std::vector<char>>& out) {
+    if (node->children.empty()) {
+        out.push_back(prefix);
+        return;
+    }
+    for (PMTree::Node* kid : node->children) {
+        prefix.push_back(kid->data);
+        gatherPerms(kid, prefix, out);
+        prefix.pop_back();
     }
 }
+}  
 
-//  getAllPerms – возвращает все перестановки в лексикографическом порядке
+
+//  getAllPerms – все перестановки в лексикографическом порядке
 std::vector<std::vector<char>> getAllPerms(const PMTree& tree) {
     std::vector<std::vector<char>> allPermutations;
     PMTree::Node* root = tree.getRoot();
@@ -81,7 +83,8 @@ std::vector<std::vector<char>> getAllPerms(const PMTree& tree) {
     return allPermutations;
 }
 
-//  getPerm1 – медленный способ: генерируем все и выбираем нужную
+
+//  getPerm1 – медленный способ
 std::vector<char> getPerm1(PMTree& tree, int num) {
     auto all = getAllPerms(tree);
     if (num < 1 || num > static_cast<int>(all.size()))
@@ -89,7 +92,9 @@ std::vector<char> getPerm1(PMTree& tree, int num) {
     return all[num - 1];
 }
 
-//  getPerm2 – быстрый способ: навигация по дереву без лишних генераций
+
+//  getPerm2 – быстрый способ
+
 std::vector<char> getPerm2(const PMTree& tree, int num) {
     PMTree::Node* root = tree.getRoot();
     if (root == nullptr || num < 1 || num > root->subtreeSize)
