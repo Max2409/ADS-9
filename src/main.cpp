@@ -1,5 +1,6 @@
 // Copyright 2022 NNTU-CS
 #include "tree.h"
+
 #include <iostream>
 #include <iomanip>
 #include <chrono>
@@ -8,8 +9,7 @@
 #include <vector>
 
 
-
-//  Преобразование вектора символов в строку
+//  Преобразование вектора символов в строку (для удобства)
 static std::string vec2str(const std::vector<char>& v) {
     return std::string(v.begin(), v.end());
 }
@@ -47,7 +47,7 @@ void runExperiment() {
               << std::setw(12) << "t1(ms)"
               << std::setw(12) << "t2(us)\n";
 
-    std::mt19937 rng(42); 
+    std::mt19937 rng(42);  // фиксированный seed
 
     for (int n = 2; n <= 10; ++n) {
         std::vector<char> input;
@@ -59,13 +59,12 @@ void runExperiment() {
 
         // 1. Время getAllPerms
         auto t0 = std::chrono::steady_clock::now();
-        // volatile предотвращает удаление вызова оптимизатором
         volatile auto all = getAllPerms(tree);
         auto t1 = std::chrono::steady_clock::now();
         double tAll =
             std::chrono::duration<double, std::milli>(t1 - t0).count();
 
-        // 2. Время getPerm1
+        // 2. Время getPerm1 
         std::uniform_int_distribution<int> dist(1, totalPerms);
         int num = dist(rng);
         t0 = std::chrono::steady_clock::now();
@@ -74,7 +73,7 @@ void runExperiment() {
         double t1time =
             std::chrono::duration<double, std::milli>(t1 - t0).count();
 
-        // 3. Время getPerm2
+        // 3. Время getPerm2 
         const int repeats = 5000;
         t0 = std::chrono::steady_clock::now();
         for (int r = 0; r < repeats; ++r) {
